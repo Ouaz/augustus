@@ -16,5 +16,6 @@ int map_water_supply_fountain_radius(void);
 int map_water_supply_reservoir_radius(void);
 int map_water_supply_well_radius(void);
 int map_water_supply_latrines_radius(void);
+int map_water_supply_is_latrines_unnecessary(int latrines_id, int radius);
 
 #endif // MAP_WATER_SUPPLY_H

@@ -343,6 +343,28 @@ int map_water_supply_is_well_unnecessary(int well_id, int radius)
     return num_houses ? WELL_UNNECESSARY_FOUNTAIN : WELL_UNNECESSARY_NO_HOUSES;
 }
 
+int map_water_supply_is_latrines_unnecessary(int latrines_id, int radius)
+{
+    building *latrines = building_get(latrines_id);
+    int num_houses = 0;
+    int x_min, y_min, x_max, y_max;
+    map_grid_get_area(latrines->x, latrines->y, 1, radius, &x_min, &y_min, &x_max, &y_max);
+
+    for (int yy = y_min; yy <= y_max; yy++) {
+        for (int xx = x_min; xx <= x_max; xx++) {
+            int grid_offset = map_grid_offset(xx, yy);
+            int building_id = map_building_at(grid_offset);
+            if (building_id && building_get(building_id)->house_size) {
+                num_houses++;
+                if (!map_terrain_is(grid_offset, TERRAIN_FOUNTAIN_RANGE)) {
+                    return WELL_NECESSARY;
+                }
+            }
+        }
+    }
+    return num_houses ? WELL_UNNECESSARY_FOUNTAIN : WELL_UNNECESSARY_NO_HOUSES;
+}
+
 int map_water_supply_fountain_radius(void)
 {
     int radius = scenario_property_climate() == CLIMATE_DESERT ? FOUNTAIN_RADIUS - 1 : FOUNTAIN_RADIUS;
